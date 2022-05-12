@@ -1,6 +1,6 @@
 from uuid import uuid4
 from flask import Flask, jsonify, request
-from first_blockchain import Blockchain
+from first_transaction import Blockchain
 
 app = Flask(__name__)
 app.config['JSONIFY_PRETTYPRINT_REGULAR'] = False
@@ -54,7 +54,7 @@ def is_valid():
     }
     return jsonify(response), 200
 
-## Adding transactions
+## Adding transactions to blockchain
 @app.route('/add_transaction', methods = ['POST'])
 def add_transaction():
     '''
@@ -70,9 +70,9 @@ def add_transaction():
     response = {'message' : f'This transaction will be added to Block {index}'}
     return jsonify(response), 201
 
-## Adding nodes
-@app.route('/add_nodes', methods = ['POST'])
-def add_nodes():
+## Adding new nodes to the network
+@app.route('/connect_node', methods = ['POST'])
+def connect_node():
     '''
     Add nodes to the blockchain
     '''
@@ -87,6 +87,26 @@ def add_nodes():
         'nodes' : list(blockchain.node)
         }
     return jsonify(response), 201
+
+
+
+@app.route('/replace_chain', methods = ['GET'])
+def replace_chain():
+    '''
+    Replace bloclchain with the longest chain
+    '''
+    is_chain_replaced = blockchain.replace_chain()
+    if is_chain_replaced:
+        response = {
+        'message': 'Blockchain replaced by longest chain',
+        'new_chain' : blockchain.chain
+    }
+    else:
+        response = {
+            'message': 'Blockchain is valid. No replacement necessary',
+            'original_chain' : blockchain.chain
+    }
+    return jsonify(response), 200
 
 ## Run the app
 app.run(host = '0.0.0.0', port = 5000)

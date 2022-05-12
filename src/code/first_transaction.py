@@ -33,7 +33,7 @@ class Blockchain:
             'index': len(self.chain)+1,
             'timestamp' : str(datetime.datetime.now()),
             'proof': proof,
-            'previous_hash': previous_hash
+            'previous_hash': previous_hash,
             'transactions' : self.transactions
             }
         
@@ -112,7 +112,7 @@ class Blockchain:
         Add new node addresses to the network
         '''
         parsed_url = urlparse(address)
-        self.nodes.add(parsed_url.netloc)
+        self.node.add(parsed_url.netloc)
     
     def replace_chain(self):
         '''
@@ -121,7 +121,7 @@ class Blockchain:
         3. Replace current blockchain with the longest chain from another node
         4. Return True if chain was replaces. Else return False
         '''
-        network = self.nodes
+        network = self.node
         longest_chain = None
         max_length = len(self.chain)
         for node in network:
